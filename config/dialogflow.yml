@@ -1,0 +1,16 @@
+# Dialogflow config
+
+default: &default
+
+  project_id : "lena-bnwnkb"
+  language_code : "de"
+  platform: "ACTIONS_ON_GOOGLE"
+
+development:
+  <<: *default
+
+test:
+  <<: *default
+
+production:
+  <<: *default
