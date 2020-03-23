@@ -1,0 +1,78 @@
+// Multiplier for dyanmic response delays
+var delayMultiplier = 30;
+
+// Empty quick response container
+$('.quickResponseContainer').empty();
+
+// Append user statement to conversation
+$('.conversation').append("<li class='me'><%=params[:message]%></li>");
+$('.screen').scrollTop(90000000);
+
+// Empty message input field
+$('#message_input_field').val("");
+
+showAnswers();
+
+// Add the text with a delay to the chat
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// Add simple responses, basic cards, and quick replies
+// Make the function asynchronus to achieve delayed responses
+async function showAnswers() {
+
+  // Add simple responses by chatbot to conversation
+  <% for i in 0..params[:simpleResponses].length-1 %>
+    $('.conversation').append("<li class='him' id='loadingDots'><span class='loading'></span></li>");
+    $('.screen').scrollTop(90000000);
+
+    <% responseLength = params[:simpleResponses][i].length%>
+    var responseLength = <%= responseLength %>;
+    responseLength = responseLength * delayMultiplier;
+    document.getElementById("message_input_field").disabled = true;
+    await sleep(responseLength);
+
+    var element = document.getElementById('loadingDots');
+    element.parentNode.removeChild(element);
+    document.getElementById("message_input_field").disabled = false;
+    $('.conversation').append("<li class='him'><%=params[:simpleResponses][i]%></li>");
+    $('.screen').scrollTop(90000000);
+  <%end%>
+
+  // Add basic cards by chatbot to conversation
+  <% for i in 0..params[:basicCardsTexts].length-1 %>
+    $('.conversation').append("<li class='him' id='loadingDots'><span class='loading'></span></li>");
+    $('.screen').scrollTop(90000000);
+
+    <% responseLength = params[:basicCardsTexts][i].length%>
+    var responseLength = <%= responseLength %>;
+    responseLength = responseLength * delayMultiplier;
+    await sleep(responseLength);
+
+    var element = document.getElementById('loadingDots');
+    element.parentNode.removeChild(element);
+    $('.conversation').append("<li class='him'><%=params[:basicCardsTexts][i]%><br><a href='<%=params[:basicCardsLinkUrls][i]%>' target='_blank'><img src='<%=params[:basicCardsImgUrls][i]%>' style='width:100px; margin: 3px 0px; border: solid 1px; border-color: grey; display: block;margin-left: auto;margin-right: auto;' alt='Missing image'></a><center><a href='<%=params[:basicCardsLinkUrls][i]%>' target='_blank'><%=params[:basicCardsLinkTexts][i]%></a></center></li>");
+    $('.screen').scrollTop(90000000);
+  <%end%>
+
+  // Hide quick response container if no quick response has been received and it is visible
+  <% if params[:suggestionResponses].length == 0 %>
+      if ($('.quickResponseContainer').height()==45) {$('.quickResponseContainer').height("-=45");$('.screen').height("+=45");}
+  <%end%>
+
+  // Show quick response container if quick response has been received and it is not visible
+  <% if params[:suggestionResponses].length > 0 %>
+    if ($('.quickResponseContainer').height()==0) {$('.quickResponseContainer').height("+=45");$('.screen').height("-=45");}
+  <%end%>
+
+  // Add quick response items to container if quick response has been received
+  <% for i in 0..params[:suggestionResponses].length-1 %>
+    $('.quickResponseContainer').append("<button name='quickResponse' class='quickResponse' value='<%=params[:suggestionResponses][i]%>'><%=params[:suggestionResponses][i]%></button>");
+  <%end%>
+
+  // Add current message contexts as string to hidden field in form
+  document.getElementById('messageContexts').setAttribute('value',  '<%=params[:messageContexts].to_s%>');
+
+  $('.screen').scrollTop(90000000);
+}
