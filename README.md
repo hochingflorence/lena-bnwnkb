@@ -6,7 +6,7 @@ This repository contains a client for Dialogflow that uses API v2 and is written
 
 You can set up the client with the following five steps:
 
-1. Create a conversational agent on [Dialogflow](https://console.dialogflow.com) using the [documentation](https://cloud.google.com/dialogflow/) provided by Google.
+1. Create a conversational agent on [Dialogflow](https://console.dialogflow.com ) using the [documentation](https://cloud.google.com/dialogflow/ ) provided by Google.
 2. Create a service account key for the webinterface for authentication. To do so, please follow the instructions in the [Google Cloud Documentation](https://cloud.google.com/dialogflow/docs/quick/setup). The resulting .json file should be named "dialogflow_authentication.json" and saved in the config folder of the webinterface. Afterwards, insert the project ID from the authentication json in the Dialogflow config file (dialogflow.yml) in the same folder.
 3. Implement desired changes to the webinterface (for example, you can change agent name and avatar in app/views/welcome/index.html.erb).
 4. Precompile the ruby application using the command "RAILS_ENV=production bundle exec rake assets:precompile".
